@@ -6,12 +6,13 @@ from django.conf.urls.static import static
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     #url(r'^$', views.index, name='index')
+    #url(r'^workshop/', include('workshop.urls')),
+    #url(r'^chaining/', include('smart_selects.urls')),
+    #url(r'^api/workshop/', views.WorkshopList.as_view())
 ]
 
 
-
-'''
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-'''
+
