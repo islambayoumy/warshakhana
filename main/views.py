@@ -4,11 +4,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Workshops ,Subscribe
 from .serializer import SubscribeSerializer
+import requests
 
 def index(request):
     workshops = Workshops.objects.all()
     return render(request, 'main/index.html', {'workshops': workshops})
 
+def testpostrequest(request):
+    #r = requests.post('http://127.0.0.1:8000/api/subscribe/', data = {'email':'aef@daf.dasf'})
+    #r = requests.get('http://127.0.0.1:8000/api/subscribe/')
+    pass
 
 class SubscribeList(APIView):
     
