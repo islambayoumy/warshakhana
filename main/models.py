@@ -168,7 +168,7 @@ class Subscribe(models.Model):
         verbose_name_plural = "Subscribe"
 
     def __str__(self):
-        return self.email + ': "' + self.is_active + '"'
+        return self.email + ': "' + str(self.is_active) + '"'
 
 
 
