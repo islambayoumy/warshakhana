@@ -1,0 +1,61 @@
+
+{% if workshops %}
+    
+    {% for workshop in workshops %}
+    <div style="border: thin silver solid">
+        <p><b>Name: </b> {{ workshop.name }}</p>
+        <p><b>Onwer: </b> {{ workshop.owner }}</p>
+        <p><b>Address: </b> {{ workshop.address }}</p>
+        <p><b>Location: </b> {{ workshop.location }}</p>
+        <p><b>Governorate: </b> {{ workshop.governorate }}</p>
+        <p><b>Zone: </b> {{ workshop.zone }}</p>
+        <p><b>Notes: </b> {{ workshop.notes }}</p>
+
+        <p><b>cars: </b><ul>
+            {% for car in workshop.cars.all  %}
+                <li>{{ car.model_name }}</li>
+            {% endfor %}
+        </ul></p>
+
+        <p><b>Specializations: </b><ul>
+            {% for specialization in workshop.specializations.all  %}
+                <li>{{ specialization.specialization }}</li>
+            {% endfor %}
+        </ul></p>
+
+        <p><b>Crafts: </b><ul>
+            {% for craft in workshop.crafts.all  %}
+                <li>{{ craft.craft }}</li>
+            {% endfor %}
+        </ul></p>
+
+        <p><b>Contacts: </b><ul>
+            {% for contact in workshop.contacts.all  %}
+                <li>{{ contact.num_type }}: {{ contact.number }}</li>
+            {% endfor %}
+        </ul></p>
+
+        <p><b>Images: </b><ul>
+            {% for image in workshop.images.all  %}
+                <li><img src="{{ image.image.url }}" style="width:150px" /></li>
+            {% endfor %}
+        </ul></p>
+
+        <p><b>Comments: </b><ul>
+            {% for comment in workshop.comments.all %}
+                 <li>{{ comment.comment }}<br/>By: {{ comment.name }} - at: {{ comment.submit_date }}</li>
+            {% endfor %}
+        </ul></p>
+
+        <p><b>Rates: </b>
+            {% for rate in workshop.rates.all  %}
+                {{ rate.rate }}
+            {% endfor %}
+            <br/>Number of rates: {{ forloop.counter0 }}
+        </p>
+        
+    </div>    
+    {% endfor %}
+        
+{% endif %}
+    

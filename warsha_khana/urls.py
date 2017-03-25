@@ -6,9 +6,10 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    #url(r'^$', views.index, name='index')
-    #url(r'^workshop/', include('workshop.urls')),
     url(r'^chaining/', include('smart_selects.urls')),
+    
+    url(r'^', include('main.urls')),
+    #url(r'^workshop/', include('workshop.urls')),
     #url(r'^api/workshop/', views.WorkshopList.as_view())
 ]
 

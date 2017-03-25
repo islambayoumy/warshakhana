@@ -96,7 +96,7 @@ class Workshops(models.Model):
 
 ''' ............... images model ............... '''
 class Images(models.Model):
-    workshop = models.ForeignKey(Workshops, related_name = 'images')
+    workshop = models.ForeignKey(Workshops, related_name = 'images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='media/uploads')
 
     class Meta:
@@ -114,9 +114,9 @@ class Contacts(models.Model):
         ('F', 'Fax')
     )
 
-    number = models.CharField(max_length=40)
+    number = models.CharField(max_length=40, unique=True)
     num_type = models.CharField(max_length=10, choices=types, default='M')
-    workshop = models.ForeignKey(Workshops, related_name = 'contacts')
+    workshop = models.ForeignKey(Workshops, related_name = 'contacts', on_delete=models.CASCADE)
     
     class Meta:
         verbose_name_plural = "Contacts"
@@ -128,9 +128,9 @@ class Contacts(models.Model):
 ''' ............... comments model ............... '''
 class Comments(models.Model):
     name = models.CharField(max_length=150, blank=True)
-    email = models.EmailField(max_length=150)
+    email = models.EmailField(max_length=150, unique=True)
     comment = models.TextField(max_length=255)
-    workshop = models.ForeignKey(Workshops, on_delete=models.CASCADE)
+    workshop = models.ForeignKey(Workshops, related_name = 'comments', on_delete=models.CASCADE)
     is_approved = models.BooleanField(default=True)
     submit_date = models.DateTimeField(auto_now_add=True)
     
@@ -143,24 +143,24 @@ class Comments(models.Model):
 
 ''' ............... rates model ............... '''
 class Rates(models.Model):
-    ip = models.GenericIPAddressField()
+    ip = models.GenericIPAddressField(unique=True)
     rate = models.IntegerField(
         default=0,
         validators=[MaxValueValidator(5), MinValueValidator(0)]
     )
-    workshop = models.ForeignKey(Workshops, on_delete=models.CASCADE)
+    workshop = models.ForeignKey(Workshops, related_name='rates', on_delete=models.CASCADE)
     submit_date = models.DateTimeField(auto_now_add=True)
     
     class Meta:
         verbose_name_plural = "Rates"
 
     def __str__(self):
-        return self.rate
+        return str(self.rate)
 
 
 ''' ............... subscribe model ............... '''
 class Subscribe(models.Model):
-    email = models.EmailField(max_length=150)
+    email = models.EmailField(max_length=150, unique=True)
     is_active = models.BooleanField(default=True)
     submit_date = models.DateTimeField(auto_now_add=True)
     
