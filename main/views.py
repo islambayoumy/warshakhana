@@ -5,6 +5,7 @@ from rest_framework import status
 from .models import Workshops ,Subscribe
 from .serializer import SubscribeSerializer, WorkshopsSerializer
 import requests, json
+from django.db.models import Q
 
 def index(request):
     workshops = Workshops.objects.all()
@@ -12,7 +13,8 @@ def index(request):
 
 def testpostrequest(request):
     #r = requests.post('http://127.0.0.1:8000/api/subscribe/', data={'email':'admin12@mysite.com'})
-    r = requests.get('http://127.0.0.1:8000/api/workshops/')
+    querystring = {'name': 'aerv', 'zone_id': '1'}
+    r = requests.get('http://127.0.0.1:8000/api/workshops/', params=querystring)
     #r = requests.put('http://127.0.0.1:8000/api/subscribe/', data = {'email':'admin19@mysite.com', 'active': '1'})
     return render(request, 'main/test.html', {'respond': r})
 
@@ -60,7 +62,33 @@ class SubscribeList(APIView):
 class WorkshopsList(APIView):
 
     def get(self, request):
-        workshops = Workshops.objects.all()
+        workshop_name = request.GET.get('name')
+        specializtion_id = request.GET.get('specializtion_id')
+        craft_id = request.GET.get('craft_id')
+        car_id = request.GET.get('car_id')
+        governorate_id = request.GET.get('governorate_id')
+        zone_id = request.GET.get('zone_id')
+        orderedBy = request.GET.get('orderedBy')
+
+        query = Q(is_visible = True)
+        if workshop_name is not None:
+            query &= Q(name__contains = workshop_name )
+        if specializtion_id is not None:
+            query &= Q(specializtions = specializtion_id )
+        if craft_id is not None:
+            query &= Q(crafts = craft_id )
+        if car_id is not None:
+            query &= Q(cars = car_id )
+        if governorate_id is not None:
+            query &= Q(governorate = governorate_id )
+        if zone_id is not None:
+            query &= Q(zone = zone_id )
+
+        # ordering by    
+        #if orderedBy is not None:
+            #query &= Q(orderedBy = zone_id )
+
+        workshops = Workshops.objects.filter(query).order_by('-id')
         serializer = WorkshopsSerializer(workshops, many=True)
         return Response(serializer.data)
 
