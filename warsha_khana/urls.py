@@ -9,7 +9,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^chaining/', include('smart_selects.urls')),
     url(r'^', include('main.urls')),
-    url(r'^api/subscribe/', views.SubscribeList.as_view())
+    url(r'^api/subscribe/', views.SubscribeList.as_view()),
+    url(r'^api/workshops/', views.WorkshopsList.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -50,6 +50,7 @@ class Governorates(models.Model):
 
     def __str__(self):
         return self.governorate
+    
 
 
 ''' ............... zones model ............... '''
@@ -91,6 +92,9 @@ class Workshops(models.Model):
         verbose_name_plural = "Workshops"
 
     def __str__(self):
+        return self.name
+
+    def __unicode__(self):
         return self.name
 
 
@@ -143,7 +147,7 @@ class Comments(models.Model):
 
 ''' ............... rates model ............... '''
 class Rates(models.Model):
-    ip = models.GenericIPAddressField(unique=True)
+    ip = models.GenericIPAddressField()
     rate = models.IntegerField(
         default=0,
         validators=[MaxValueValidator(5), MinValueValidator(0)]
@@ -153,6 +157,7 @@ class Rates(models.Model):
     
     class Meta:
         verbose_name_plural = "Rates"
+        unique_together = ('ip', 'workshop',)
 
     def __str__(self):
         return str(self.rate)

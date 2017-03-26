@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Workshops ,Subscribe
-from .serializer import SubscribeSerializer
+from .serializer import SubscribeSerializer, WorkshopsSerializer
 import requests, json
 
 def index(request):
@@ -11,8 +11,8 @@ def index(request):
     return render(request, 'main/index.html', {'workshops': workshops})
 
 def testpostrequest(request):
-    r = requests.post('http://127.0.0.1:8000/api/subscribe/', data={'email':'admin12@mysite.com'})
-    #r = requests.get('http://127.0.0.1:8000/api/subscribe/')
+    #r = requests.post('http://127.0.0.1:8000/api/subscribe/', data={'email':'admin12@mysite.com'})
+    r = requests.get('http://127.0.0.1:8000/api/workshops/')
     #r = requests.put('http://127.0.0.1:8000/api/subscribe/', data = {'email':'admin19@mysite.com', 'active': '1'})
     return render(request, 'main/test.html', {'respond': r})
 
@@ -55,3 +55,16 @@ class SubscribeList(APIView):
                     return Response('subscribed successfully', status=status.HTTP_201_CREATED)
                 except:
                     return Response('subscription error')
+
+
+class WorkshopsList(APIView):
+
+    def get(self, request):
+        workshops = Workshops.objects.all()
+        serializer = WorkshopsSerializer(workshops, many=True)
+        return Response(serializer.data)
+
+
+
+
+
