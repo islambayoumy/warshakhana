@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Workshops ,Subscribe
-from .serializer import SubscribeSerializer, WorkshopsSerializer
+from .serializer import SubscribeSerializer, WorkshopsListSerializer, WorkshopSerializer
 import requests, json
 from django.db.models import Q
 
@@ -89,7 +89,7 @@ class WorkshopsList(APIView):
             #query &= Q(orderedBy = zone_id )
 
         workshops = Workshops.objects.filter(query).order_by('-id')
-        serializer = WorkshopsSerializer(workshops, many=True)
+        serializer = WorkshopsListSerializer(workshops, many=True)
         return Response(serializer.data)
 
 
@@ -97,6 +97,6 @@ class WorkshopDetails(APIView):
     
     def get(self, request, workshop_id):
         workshop = Workshops.objects.filter(pk=workshop_id)
-        serializer = WorkshopsSerializer(workshop, many=True)
+        serializer = WorkshopSerializer(workshop, many=True)
         return Response(serializer.data)
 

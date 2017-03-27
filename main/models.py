@@ -132,7 +132,7 @@ class Contacts(models.Model):
 ''' ............... comments model ............... '''
 class Comments(models.Model):
     name = models.CharField(max_length=150, blank=True)
-    email = models.EmailField(max_length=150, unique=True)
+    email = models.EmailField(max_length=150)
     comment = models.TextField(max_length=255)
     workshop = models.ForeignKey(Workshops, related_name = 'comments', on_delete=models.CASCADE)
     is_approved = models.BooleanField(default=True)
@@ -142,7 +142,7 @@ class Comments(models.Model):
         verbose_name_plural = "Comments"
 
     def __str__(self):
-        return self.comment
+        return self.comment  + ': "' + str(self.is_approved) + '"'
 
 
 ''' ............... rates model ............... '''
