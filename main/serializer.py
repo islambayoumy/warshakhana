@@ -103,5 +103,9 @@ class WorkshopsSerializer(serializers.ModelSerializer):
         return obj.rates.count()
 
     def get_rates_value(self, obj):
-        return int(obj.rates.aggregate(avg=Avg('rate'))['avg'])
+        value = obj.rates.aggregate(avg=Avg('rate'))['avg']
+        if value:
+            return int(value)
+        else:
+            return 0
 
