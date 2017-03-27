@@ -93,6 +93,10 @@ class WorkshopsList(APIView):
         return Response(serializer.data)
 
 
-
-
+class WorkshopDetails(APIView):
+    
+    def get(self, request, workshop_id):
+        workshop = Workshops.objects.filter(pk=workshop_id)
+        serializer = WorkshopsSerializer(workshop, many=True)
+        return Response(serializer.data)
 

@@ -9,8 +9,11 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^chaining/', include('smart_selects.urls')),
     url(r'^', include('main.urls')),
+
+    # RESTful APIs
     url(r'^api/subscribe/', views.SubscribeList.as_view()),
-    url(r'^api/workshops/', views.WorkshopsList.as_view())
+    url(r'^api/workshops/', views.WorkshopsList.as_view()),
+    url(r'^api/workshop/(?P<workshop_id>\d+)/$', views.WorkshopDetails.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
