@@ -7,6 +7,9 @@ from .serializer import SubscribeSerializer, WorkshopsListSerializer, WorkshopSe
 import requests, json
 from django.db.models import Q
 
+def about(request):
+    render (request, 'main/index.html')
+
 def index(request):
     workshops = Workshops.objects.all()
     return render(request, 'main/index.html', {'workshops': workshops})
