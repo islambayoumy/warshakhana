@@ -13,7 +13,11 @@ urlpatterns = [
     # RESTful APIs
     url(r'^api/subscribe/', views.SubscribeList.as_view()),
     url(r'^api/workshops/', views.WorkshopsList.as_view()),
-    url(r'^api/workshop/(?P<workshop_id>\d+)/$', views.WorkshopDetails.as_view()),
+    url(r'^api/workshop/', views.WorkshopDetails.as_view()),
+
+    # workshops lists and details
+    url(r'^workshop/(?P<workshop_id>\d+)/$', views.workshop),
+
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

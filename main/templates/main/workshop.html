@@ -1,0 +1,16 @@
+
+{% for r in Respond %}
+Respond:<br/><br/>
+    Name: {{ r.name }}<br/>
+    Owner: {{ r.owner }}<br/>
+    Cars: <ul>{% for car in r.cars %}
+        <li>{{ car.model_name }}</li>
+    {% endfor %}</ul>
+    Rate value: <p style="background-color: #faa;width: {{ r.rates_value }}0%">rate times: {{ r.rates_number }}</p>
+    Comments: <ul>{% for comment in r.comments %}
+        <li>{{ comment.submit_date }}</li>
+    {% endfor %}</ul>
+{% empty %}
+    NO Respond !
+{% endfor %}
+

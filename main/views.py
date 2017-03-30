@@ -7,19 +7,30 @@ from .serializer import SubscribeSerializer, WorkshopsListSerializer, WorkshopSe
 import requests, json
 from django.db.models import Q
 
+## testing
 def about(request):
     render (request, 'main/index.html')
 
+## index page
 def index(request):
     workshops = Workshops.objects.all()
     return render(request, 'main/index.html', {'workshops': workshops})
 
+## testing
 def testpostrequest(request):
     #r = requests.post('http://127.0.0.1:8000/api/subscribe/', data={'email':'admin12@mysite.com'})
     querystring = {'name': 'aerv', 'zone_id': '1'}
     r = requests.get('http://127.0.0.1:8000/api/workshops/', params=querystring)
     #r = requests.put('http://127.0.0.1:8000/api/subscribe/', data = {'email':'admin19@mysite.com', 'active': '1'})
     return render(request, 'main/test.html', {'respond': r})
+
+def workshop(request, workshop_id):
+    querystring = {'workshop_id': workshop_id}
+    r = requests.get('http://127.0.0.1:8000/api/workshop/', params=querystring)
+    json_response = r.json()
+    
+    return render(request, 'main/workshop.html', {'Respond': json_response})
+
 
 class SubscribeList(APIView):
     
@@ -98,8 +109,10 @@ class WorkshopsList(APIView):
 
 class WorkshopDetails(APIView):
     
-    def get(self, request, workshop_id):
+    def get(self, request):
+        workshop_id = request.GET.get('workshop_id')        
         workshop = Workshops.objects.filter(pk=workshop_id)
         serializer = WorkshopSerializer(workshop, many=True)
         return Response(serializer.data)
+        
 
