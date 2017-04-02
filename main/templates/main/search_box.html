@@ -1,0 +1,32 @@
+
+<form action="search_results" method="get">
+
+    <div class="searchBox">
+		<input name="workshop_name" type="text" placeholder="إسم الورشة" />
+		<select name="specializtion_id">
+			<option value="0">الصنعة</option>
+		</select>
+		<select name="craft_id">
+			<option value="0">التخصص</option>
+		</select>
+		<select name="car_id">
+			<option value="0">موديلات السيارات</option>
+		</select>
+		<select name="governorate_id">
+			<option value="0">المحافظة</option>
+			<option value="1">القاهرة</option>
+			<option value="02">الأسكندرية</option>
+		</select>
+		<select name="zone_id">
+			<option value="0">المنطقة</option>
+		</select>		
+		<br/><br/>
+		<input type="submit" value="search" />
+		<select name="ordered_by">
+			<option value="newest">الأحدث</option>
+			<option value="rank">الأعلى تقييماً</option>
+			<option value="views">الأكثر مشاهدة</option>
+		</select>
+	</div>
+
+</form>

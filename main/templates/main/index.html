@@ -1,66 +1,92 @@
 
+<form action="" method="get">
+
+    {% csrf_token %}
+    <div class="searchBox">
+		<input name="workshop_name" type="text" placeholder="إسم الورشة" />
+		<select name="specializtion_id">
+			<option value="0">الصنعة</option>
+            {% for s in specializations %}
+                <option value="{{s.id}}">{{ s.specialization }}</option>
+            {% endfor %}
+		</select>
+		<select name="craft_id">
+			<option value="0">التخصص</option>
+            {% for c in crafts %}
+                <option value="{{c.id}}">{{ c.craft }}</option>
+            {% endfor %}
+		</select>
+		<select name="car_id">
+			<option value="0">موديلات السيارات</option>
+            {% for c in cars %}
+                <option value="{{c.id}}">{{ c.model_name }}</option>
+            {% endfor %}
+		</select>
+		<select name="governorate_id">
+			<option value="0">المحافظة</option>
+            {% for g in governorates %}
+                <option value="{{g.id}}">{{ g.governorate }}</option>
+            {% endfor %}
+		</select>
+		<select name="zone_id">
+			<option value="0">المنطقة</option>
+            {% for z in zones %}
+                <option value="{{z.id}}">{{ z.zone }}</option>
+            {% endfor %}
+		</select>		
+		<br/><br/>
+		<input type="submit" value="search" />
+		<select name="ordered_by">
+			<option value="newest">الأحدث</option>
+			<option value="rank">الأعلى تقييماً</option>
+			<option value="views">الأكثر مشاهدة</option>
+		</select>
+	</div>
+
+</form>
+<hr/>
+
+{% if error %}
+        <p style="color: red;">{{ error.message }} | Code: {{ error.code }}</p>
+{% endif %}
+
 {% if workshops %}
+    <p style="color: mediumseagreen">Found {{ workshops|length }} workshop{{ workshops|pluralize }}</p>
     
-    {% for workshop in workshops %}
+
+{% for workshop in workshops %}
     <div style="border: thin silver solid">
         <p><b>Name: </b> {{ workshop.name }}</p>
         <p><b>Onwer: </b> {{ workshop.owner }}</p>
-        <p><b>Address: </b> {{ workshop.address }}</p>
-        <p><b>Location: </b> {{ workshop.location }}</p>
-        <p><b>Governorate: </b> {{ workshop.governorate }}</p>
-        <p><b>Zone: </b> {{ workshop.zone }}</p>
-        <p><b>Notes: </b> {{ workshop.notes }}</p>
-
-        <p><b>cars: </b><ul>
-            {% for car in workshop.cars.all  %}
-                <li>{{ car.model_name }}</li>
-            {% endfor %}
-        </ul></p>
+        <p><b>Governorate: </b> {{ workshop.governorate.governorate }}</p>
+        <p><b>Zone: </b> {{ workshop.zone.zone }}</p>
 
         <p><b>Specializations: </b><ul>
-            {% for specialization in workshop.specializations.all  %}
+            {% for specialization in workshop.specializations  %}
                 <li>{{ specialization.specialization }}</li>
             {% endfor %}
         </ul></p>
 
         <p><b>Crafts: </b><ul>
-            {% for craft in workshop.crafts.all  %}
+            {% for craft in workshop.crafts  %}
                 <li>{{ craft.craft }}</li>
             {% endfor %}
         </ul></p>
 
-        <p><b>Contacts: </b><ul>
-            {% for contact in workshop.contacts.all  %}
-                <li>{{ contact.num_type }}: {{ contact.number }}</li>
-            {% endfor %}
-        </ul></p>
-
         <p><b>Images: </b><ul>
-            {% for image in workshop.images.all  %}
-                <li><img src="{{ image.image.url }}" style="width:150px" /></li>
-            {% endfor %}
-        </ul></p>
-
-        <p><b>Comments: </b><ul>
-            {% for comment in workshop.comments.all %}
-                 <li>{{ comment.comment }}<br/>By: {{ comment.name }} - at: {{ comment.submit_date }}</li>
+            {% for image in workshop.images  %}
+                <li><img src="{{ image.image }}" style="width:150px" /></li>
             {% endfor %}
         </ul></p>
 
         <p><b>Rates: </b>
-            {% for rate in workshop.rates.all  %}
-                {{ rate.rate }}
-            {% endfor %}
-            <br/>Number of rates: {{ forloop.counter0 }}
+            <p style="background-color: silver;width: 50%">rate times: {{ workshop.rates_number }}</p>
+            <p style="background-color: #faa;width: {{ workshop.rates_value }}0%">rate times: {{ workshop.rates_number }}</p>
         </p>
         
-    </div>    
-    {% endfor %}
-
-{% else %}
-
-    <h4>No workshops</h4>
+    </div>  
+{% empty %}
+    <h4 style="color: firebrick">No workshops !</h4>
+{% endfor %}
 
 {% endif %}
-
-

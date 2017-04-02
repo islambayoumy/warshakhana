@@ -31,7 +31,7 @@ class CarsSerializer(serializers.ModelSerializer):
         fields = ('id', 'model_name')
 
 
-class SpecializationssSerializer(serializers.ModelSerializer):
+class SpecializationsSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Specializations
@@ -77,7 +77,7 @@ class WorkshopSerializer(serializers.ModelSerializer):
     governorate = GovernoratesSerializer()
     zone = ZonesSerializer()
     cars = CarsSerializer(many=True)
-    specializations = SpecializationssSerializer(many=True)
+    specializations = SpecializationsSerializer(many=True)
     crafts = CraftsSerializer(many=True)
     contacts = ContactsSerializer(many=True)
     images = ImagesSerializer(many=True)
@@ -128,7 +128,7 @@ class WorkshopsListSerializer(serializers.ModelSerializer):
     
     governorate = GovernoratesSerializer()
     zone = ZonesSerializer()
-    specializations = SpecializationssSerializer(many=True)
+    specializations = SpecializationsSerializer(many=True)
     crafts = CraftsSerializer(many=True)
     images = ImagesSerializer(many=True)
 

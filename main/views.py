@@ -2,27 +2,82 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Workshops ,Subscribe
-from .serializer import SubscribeSerializer, WorkshopsListSerializer, WorkshopSerializer
+from .models import Workshops ,Subscribe, Cars, Specializations, Crafts, Governorates, Zones
+from .serializer import SubscribeSerializer, WorkshopsListSerializer, WorkshopSerializer, CarsSerializer, SpecializationsSerializer, CraftsSerializer, GovernoratesSerializer, ZonesSerializer
 import requests, json
 from django.db.models import Q
+from django.http import HttpResponse ##
 
-## testing
-def about(request):
-    render (request, 'main/index.html')
 
 ## index page
 def index(request):
-    workshops = Workshops.objects.all()
-    return render(request, 'main/index.html', {'workshops': workshops})
+    return render(request, 'main/index.html')
 
 ## testing
+def display_meta(request):
+    values = request.META.items()
+    html = []
+    for k, v in values:
+        html.append('<tr><td>%s</td><td>%s</td></tr>' % (k, v))
+    return HttpResponse('<table>%s</table>' % '\n'.join(html))
+
 def testpostrequest(request):
     #r = requests.post('http://127.0.0.1:8000/api/subscribe/', data={'email':'admin12@mysite.com'})
     querystring = {'name': 'aerv', 'zone_id': '1'}
     r = requests.get('http://127.0.0.1:8000/api/workshops/', params=querystring)
     #r = requests.put('http://127.0.0.1:8000/api/subscribe/', data = {'email':'admin19@mysite.com', 'active': '1'})
     return render(request, 'main/test.html', {'respond': r})
+
+def search(request):
+    return render(request, 'main/search_box.html')
+
+## end testing
+
+def submit_search(request):
+    cars = requests.get('http://127.0.0.1:8000/api/selections/', params={'retrieve': 'cars'})
+    json_cars = cars.json()
+    specializations = requests.get('http://127.0.0.1:8000/api/selections/', params={'retrieve': 'specializations'})
+    json_specializations = specializations.json()
+    crafts = requests.get('http://127.0.0.1:8000/api/selections/', params={'retrieve': 'crafts'})
+    json_crafts = crafts.json()
+    governorates = requests.get('http://127.0.0.1:8000/api/selections/', params={'retrieve': 'governorates'})
+    json_governorates = governorates.json()
+    zones = requests.get('http://127.0.0.1:8000/api/selections/', params={'retrieve': 'zones'})
+    json_zones = zones.json()
+    context = {
+        'cars': json_cars,
+        'specializations': json_specializations,
+        'crafts': json_crafts,
+        'governorates': json_governorates,
+        'zones': json_zones,
+    }
+
+    workshop_name = request.GET.get('workshop_name')
+    specializtion_id = request.GET.get('specializtion_id')
+    craft_id = request.GET.get('craft_id')
+    car_id = request.GET.get('car_id')
+    governorate_id = request.GET.get('governorate_id')
+    zone_id = request.GET.get('zone_id')
+    ordered_by = request.GET.get('ordered_by')
+
+    querystring = {
+        'workshop_name': workshop_name,
+        'specializtion_id': specializtion_id,
+        'craft_id': craft_id,
+        'car_id': car_id,
+        'governorate_id': governorate_id,
+        'zone_id': zone_id,
+        'ordered_by': ordered_by,        
+        }
+    if any(querystring.values()):
+        r = requests.get('http://127.0.0.1:8000/api/workshops/', params=querystring)
+
+        if r.status_code == 200:
+            json_response = r.json()
+            return render(request, 'main/index.html', {'workshops': json_response})
+        else:
+            return render(request, 'main/index.html', {'error': {'message': 'request fails', 'code': r.status_code}})
+    return render(request, 'main/index.html', context)
 
 def workshop(request, workshop_id):
     querystring = {'workshop_id': workshop_id}
@@ -76,33 +131,37 @@ class SubscribeList(APIView):
 class WorkshopsList(APIView):
 
     def get(self, request):
-        workshop_name = request.GET.get('name')
+        workshop_name = request.GET.get('workshop_name')
         specializtion_id = request.GET.get('specializtion_id')
         craft_id = request.GET.get('craft_id')
         car_id = request.GET.get('car_id')
         governorate_id = request.GET.get('governorate_id')
         zone_id = request.GET.get('zone_id')
-        orderedBy = request.GET.get('orderedBy')
+        ordered_by = request.GET.get('ordered_by')
 
         query = Q(is_visible = True)
-        if workshop_name is not None:
-            query &= Q(name__contains = workshop_name )
-        if specializtion_id is not None:
-            query &= Q(specializtions = specializtion_id )
-        if craft_id is not None:
-            query &= Q(crafts = craft_id )
-        if car_id is not None:
-            query &= Q(cars = car_id )
-        if governorate_id is not None:
-            query &= Q(governorate = governorate_id )
-        if zone_id is not None:
-            query &= Q(zone = zone_id )
+        if workshop_name != '':
+            query &= Q(name__icontains = workshop_name)
+        if specializtion_id != '0':
+            query &= Q(specializations = specializtion_id)
+        if craft_id != '0':
+            query &= Q(crafts = craft_id)
+        if car_id != '0':
+            query &= Q(cars = car_id)
+        if governorate_id != '0':
+            query &= Q(governorate = governorate_id)
+        if zone_id != '0':
+            query &= Q(zone = zone_id)
 
         # ordering by    
-        #if orderedBy is not None:
-            #query &= Q(orderedBy = zone_id )
+        if ordered_by == 'newest':
+            order = '-id'
+        elif ordered_by == 'rank':
+            order = 'name'              #####
+        elif ordered_by == 'views':
+            order = 'owner'             #####
 
-        workshops = Workshops.objects.filter(query).order_by('-id')
+        workshops = Workshops.objects.filter(query).order_by(order)
         serializer = WorkshopsListSerializer(workshops, many=True)
         return Response(serializer.data)
 
@@ -114,5 +173,37 @@ class WorkshopDetails(APIView):
         workshop = Workshops.objects.filter(pk=workshop_id)
         serializer = WorkshopSerializer(workshop, many=True)
         return Response(serializer.data)
+        
+
+class Selections(APIView):
+    
+    def get(self, request):
+        
+        if 'retrieve' in request.GET:
+            retrieve = request.GET.get('retrieve')
+            if retrieve == 'cars':
+                cars = Cars.objects.all()
+                serializer = CarsSerializer(cars, many=True)
+                return Response(serializer.data)
+            elif retrieve == 'specializations':
+                specializations = Specializations.objects.all()
+                serializer = SpecializationsSerializer(specializations, many=True)
+                return Response(serializer.data)
+            elif retrieve == 'crafts':
+                crafts = Crafts.objects.all()
+                serializer = CraftsSerializer(crafts, many=True)
+                return Response(serializer.data)
+            elif retrieve == 'governorates':
+                governorates = Governorates.objects.all()
+                serializer = GovernoratesSerializer(governorates, many=True)
+                return Response(serializer.data)
+            elif retrieve == 'zones':
+                zones = Zones.objects.all()
+                serializer = ZonesSerializer(zones, many=True)
+                return Response(serializer.data)
+            else:
+                return HttpResponse('enter valid retrieval type')
+        else:
+            return HttpResponse('enter retrieval type')
         
 

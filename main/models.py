@@ -10,6 +10,7 @@ class Cars(models.Model):
 
     class Meta:
         verbose_name_plural = "Cars"
+        ordering = ['model_name']
 
     def __str__(self):
         return self.model_name
@@ -22,6 +23,7 @@ class Specializations(models.Model):
     
     class Meta:
         verbose_name_plural = "Specializations"
+        ordering = ['specialization']
 
     def __str__(self):
         return self.specialization
@@ -35,6 +37,7 @@ class Crafts(models.Model):
     
     class Meta:
         verbose_name_plural = "Crafts"
+        ordering = ['craft']
 
     def __str__(self):
         return self.craft
@@ -47,6 +50,7 @@ class Governorates(models.Model):
     
     class Meta:
         verbose_name_plural = "Governorates"
+        ordering = ['governorate']
 
     def __str__(self):
         return self.governorate
@@ -61,6 +65,7 @@ class Zones(models.Model):
     
     class Meta:
         verbose_name_plural = "Zones"
+        ordering = ['zone']
 
     def __str__(self):
         return self.zone
@@ -140,6 +145,7 @@ class Comments(models.Model):
     
     class Meta:
         verbose_name_plural = "Comments"
+        ordering = ['submit_date']
 
     def __str__(self):
         return self.comment  + ': "' + str(self.is_approved) + '"'

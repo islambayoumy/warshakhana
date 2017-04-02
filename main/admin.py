@@ -15,7 +15,11 @@ class ContactsInline(admin.TabularInline):
 
 class WorkshopsAdmin(admin.ModelAdmin):
     inlines = [ContactsInline, ImagesInline]
-
+    list_display = ('name', 'owner', 'timestamp')   # for sorting by
+    search_fields = ('name', 'owner')               # for searching
+    list_filter = ('timestamp', 'is_visible')       # for filtering data by
+    ordering = ('-timestamp',)                      # for ordering
+    filter_horizontal = ('cars', 'specializations', 'crafts') # instead of multi-select option
 
 models = [
     Cars,
@@ -23,8 +27,8 @@ models = [
     Crafts,
     Governorates,
     Zones,
-    Contacts,   ##
-    Images,      ##
+    Contacts,   ## ..............
+    Images,      ## ..............
     Comments,
     Rates, 
     Subscribe

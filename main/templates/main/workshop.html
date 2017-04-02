@@ -6,7 +6,9 @@ Respond:<br/><br/>
     Cars: <ul>{% for car in r.cars %}
         <li>{{ car.model_name }}</li>
     {% endfor %}</ul>
-    Rate value: <p style="background-color: #faa;width: {{ r.rates_value }}0%">rate times: {{ r.rates_number }}</p>
+    Rate value: 
+    <p style="background-color: silver;width: 50%">rate times: {{ r.rates_number }}</p>
+    <p style="background-color: #faa;width: {{ r.rates_value }}0%">rate times: {{ r.rates_number }}</p>
     Comments: <ul>{% for comment in r.comments %}
         <li>{{ comment.submit_date }}</li>
     {% endfor %}</ul>

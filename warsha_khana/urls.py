@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^api/subscribe/', views.SubscribeList.as_view()),
     url(r'^api/workshops/', views.WorkshopsList.as_view()),
     url(r'^api/workshop/', views.WorkshopDetails.as_view()),
+    url(r'^api/selections/', views.Selections.as_view()),
 
     # workshops lists and details
     url(r'^workshop/(?P<workshop_id>\d+)/$', views.workshop),
