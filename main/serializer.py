@@ -18,10 +18,10 @@ class GovernoratesSerializer(serializers.ModelSerializer):
 
 
 class ZonesSerializer(serializers.ModelSerializer):
-    
+    governorate = GovernoratesSerializer()
     class Meta:
         model = Zones
-        fields = ('id', 'zone')
+        fields = ('id', 'zone', 'governorate')
 
 
 class CarsSerializer(serializers.ModelSerializer):

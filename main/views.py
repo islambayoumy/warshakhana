@@ -34,23 +34,8 @@ def search(request):
 ## end testing
 
 def submit_search(request):
-    cars = requests.get('http://127.0.0.1:8000/api/selections/', params={'retrieve': 'cars'})
-    json_cars = cars.json()
-    specializations = requests.get('http://127.0.0.1:8000/api/selections/', params={'retrieve': 'specializations'})
-    json_specializations = specializations.json()
-    crafts = requests.get('http://127.0.0.1:8000/api/selections/', params={'retrieve': 'crafts'})
-    json_crafts = crafts.json()
-    governorates = requests.get('http://127.0.0.1:8000/api/selections/', params={'retrieve': 'governorates'})
-    json_governorates = governorates.json()
-    zones = requests.get('http://127.0.0.1:8000/api/selections/', params={'retrieve': 'zones'})
-    json_zones = zones.json()
-    context = {
-        'cars': json_cars,
-        'specializations': json_specializations,
-        'crafts': json_crafts,
-        'governorates': json_governorates,
-        'zones': json_zones,
-    }
+    selections = requests.get('http://127.0.0.1:8000/api/selections/')
+    json_selections = selections.json()
 
     workshop_name = request.GET.get('workshop_name')
     specializtion_id = request.GET.get('specializtion_id')
@@ -74,10 +59,10 @@ def submit_search(request):
 
         if r.status_code == 200:
             json_response = r.json()
-            return render(request, 'main/index.html', {'workshops': json_response})
+            return render(request, 'main/index.html', {'selections': json_selections, 'workshops': json_response})
         else:
             return render(request, 'main/index.html', {'error': {'message': 'request fails', 'code': r.status_code}})
-    return render(request, 'main/index.html', context)
+    return render(request, 'main/index.html', {'selections': json_selections})
 
 def workshop(request, workshop_id):
     querystring = {'workshop_id': workshop_id}
@@ -160,6 +145,8 @@ class WorkshopsList(APIView):
             order = 'name'              #####
         elif ordered_by == 'views':
             order = 'owner'             #####
+        else:
+            order = '-id'
 
         workshops = Workshops.objects.filter(query).order_by(order)
         serializer = WorkshopsListSerializer(workshops, many=True)
@@ -179,31 +166,30 @@ class Selections(APIView):
     
     def get(self, request):
         
-        if 'retrieve' in request.GET:
-            retrieve = request.GET.get('retrieve')
-            if retrieve == 'cars':
-                cars = Cars.objects.all()
-                serializer = CarsSerializer(cars, many=True)
-                return Response(serializer.data)
-            elif retrieve == 'specializations':
-                specializations = Specializations.objects.all()
-                serializer = SpecializationsSerializer(specializations, many=True)
-                return Response(serializer.data)
-            elif retrieve == 'crafts':
-                crafts = Crafts.objects.all()
-                serializer = CraftsSerializer(crafts, many=True)
-                return Response(serializer.data)
-            elif retrieve == 'governorates':
-                governorates = Governorates.objects.all()
-                serializer = GovernoratesSerializer(governorates, many=True)
-                return Response(serializer.data)
-            elif retrieve == 'zones':
-                zones = Zones.objects.all()
-                serializer = ZonesSerializer(zones, many=True)
-                return Response(serializer.data)
-            else:
-                return HttpResponse('enter valid retrieval type')
-        else:
-            return HttpResponse('enter retrieval type')
+        cars = Cars.objects.all()
+        c_serializer = CarsSerializer(cars, many=True)
+
+        specializations = Specializations.objects.all()
+        s_serializer = SpecializationsSerializer(specializations, many=True)
+
+        crafts = Crafts.objects.all()
+        cr_serializer = CraftsSerializer(crafts, many=True)
+
+        governorates = Governorates.objects.all()
+        g_serializer = GovernoratesSerializer(governorates, many=True)
+
+        zones = Zones.objects.all()
+        z_serializer = ZonesSerializer(zones, many=True)
+        
+        data = {
+            'cars': c_serializer.data,
+            'specializations': s_serializer.data,
+            'crafts': cr_serializer.data,
+            'governorates': g_serializer.data,
+            'zones': z_serializer.data,
+        }
+
+        return Response(data)
+
         
 

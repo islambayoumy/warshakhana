@@ -1,4 +1,6 @@
 
+<a href="{% url 'main:index' %}">Home</a><br/><br/>
+
 <form action="" method="get">
 
     {% csrf_token %}
@@ -6,31 +8,31 @@
 		<input name="workshop_name" type="text" placeholder="إسم الورشة" />
 		<select name="specializtion_id">
 			<option value="0">الصنعة</option>
-            {% for s in specializations %}
+            {% for s in selections.specializations %}
                 <option value="{{s.id}}">{{ s.specialization }}</option>
             {% endfor %}
 		</select>
 		<select name="craft_id">
 			<option value="0">التخصص</option>
-            {% for c in crafts %}
+            {% for c in selections.crafts %}
                 <option value="{{c.id}}">{{ c.craft }}</option>
             {% endfor %}
 		</select>
 		<select name="car_id">
 			<option value="0">موديلات السيارات</option>
-            {% for c in cars %}
+            {% for c in selections.cars %}
                 <option value="{{c.id}}">{{ c.model_name }}</option>
             {% endfor %}
 		</select>
 		<select name="governorate_id">
 			<option value="0">المحافظة</option>
-            {% for g in governorates %}
+            {% for g in selections.governorates %}
                 <option value="{{g.id}}">{{ g.governorate }}</option>
             {% endfor %}
 		</select>
 		<select name="zone_id">
 			<option value="0">المنطقة</option>
-            {% for z in zones %}
+            {% for z in selections.zones %}
                 <option value="{{z.id}}">{{ z.zone }}</option>
             {% endfor %}
 		</select>		
@@ -52,7 +54,7 @@
 
 {% if workshops %}
     <p style="color: mediumseagreen">Found {{ workshops|length }} workshop{{ workshops|pluralize }}</p>
-    
+{% endif %}
 
 {% for workshop in workshops %}
     <div style="border: thin silver solid">
@@ -89,4 +91,3 @@
     <h4 style="color: firebrick">No workshops !</h4>
 {% endfor %}
 
-{% endif %}
