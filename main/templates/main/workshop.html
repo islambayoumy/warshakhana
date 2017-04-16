@@ -12,6 +12,7 @@ Respond:<br/><br/>
     Comments: <ul>{% for comment in r.comments %}
         <li>{{ comment.submit_date }}</li>
     {% endfor %}</ul>
+	Notes: {{ r.notes|safe }}
 {% empty %}
     NO Respond !
 {% endfor %}
